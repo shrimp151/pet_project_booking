@@ -40,8 +40,8 @@ def create_hotel(
 @app.put("/hotels/{hotel_id}")
 def put_hotel(
         hotel_id: int,
-        title : str,
-        name : str
+        title : str = Body(embed=True),
+        name : str = Body(embed=True)
 ):
     global hotels
     for hotel in hotels:
@@ -54,8 +54,8 @@ def put_hotel(
 @app.patch("/hotels/{hotel_id}")
 def patch_hotel(
         hotel_id: int,
-        title : str | None = Query(None),
-        name : str | None = Query(None)
+        title : str | None = Body(None, embed=True),
+        name : str | None = Body(None, embed=True)
 ):
     global hotels
     for hotel in hotels:
