@@ -9,7 +9,11 @@ hotels = [
 ]
 
 
-@app.get("/hotels")
+@app.get(
+    "/hotels",
+    summary="Получить данные об отелях",
+    description="Тут может быть доп инфа"
+)
 def get_hotels(
     id: int | None = Query(None, description="Айдишник"),
     title: str | None = Query(None, description="Название отеля"),
@@ -70,8 +74,7 @@ def patch_hotel(
 @app.delete("/hotels/{hotel_id}")
 def delete_hotel(hotel_id: int):
     global hotels
-    for hotel in hotels:
-        hotels = [hotel for hotel in hotels if hotel["id"] != hotel_id]
+    hotels = [hotel for hotel in hotels if hotel["id"] != hotel_id]
     return {"status": "OK"}
 
 
