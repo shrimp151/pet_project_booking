@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Query, Body, APIRouter
+from fastapi import Query, Body, APIRouter
 
 
 router = APIRouter(prefix="/hotels", tags=["Отели"])
