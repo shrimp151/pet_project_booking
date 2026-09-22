@@ -1,4 +1,5 @@
 from fastapi import Query, Body, APIRouter
+from pydantic import BaseModel
 
 
 router = APIRouter(prefix="/hotels", tags=["Отели"])
@@ -29,37 +30,36 @@ def get_hotels(
     return hotels_
 
 
-#body, request body
+class Hotel(BaseModel):
+    title: str
+    name: str
+
+
 @router.post(
     "",
     summary="Добавить данные об отеле"
 )
-def create_hotel(
-        title : str = Body(embed=True)                                                              #embed делает json
-):
+def create_hotel(hotel_data: Hotel):
     global hotels
     hotels.append({
         "id": hotels[-1]["id"] + 1,
-        "title": title,
+        "title": hotel_data.title,
+        "name": hotel_data.name
     })
-    return {"status" : "OK"}
+    return {"status": "OK"}
 
 
 @router.put(
     "/{hotel_id}",
     summary="Обновить данные об отеле"
 )
-def put_hotel(
-        hotel_id: int,
-        title : str = Body(embed=True),
-        name : str = Body(embed=True)
-):
+def put_hotel(hotel_id: int, hotel_data: Hotel):
     global hotels
     for hotel in hotels:
         if hotel["id"] == hotel_id:
-            hotel["title"] = title
-            hotel["name"] = name
-    return {"status" : "OK"}
+            hotel["title"] = hotel_data.title
+            hotel["name"] = hotel_data.name
+    return {"status": "OK"}
 
 
 @router.patch(
@@ -68,8 +68,8 @@ def put_hotel(
 )
 def patch_hotel(
         hotel_id: int,
-        title : str | None = Body(None, embed=True),
-        name : str | None = Body(None, embed=True)
+        title: str | None = Body(None),
+        name: str | None = Body(None)
 ):
     global hotels
     for hotel in hotels:
@@ -78,7 +78,7 @@ def patch_hotel(
                 hotel["title"] = title
             if name:
                 hotel["name"] = name
-    return {"status" : "OK"}
+    return {"status": "OK"}
 
 
 @router.delete(
