@@ -1,5 +1,6 @@
-from fastapi import Query, Body, APIRouter
-from pydantic import BaseModel
+from fastapi import Query, APIRouter
+
+from schemas.hotels import Hotel, HotelPATCH
 
 
 router = APIRouter(prefix="/hotels", tags=["Отели"])
@@ -28,11 +29,6 @@ def get_hotels(
             continue
         hotels_.append(hotel)
     return hotels_
-
-
-class Hotel(BaseModel):
-    title: str
-    name: str
 
 
 @router.post(
@@ -66,18 +62,14 @@ def put_hotel(hotel_id: int, hotel_data: Hotel):
     "/{hotel_id}",
     summary="Частично обновить данные об отеле"
 )
-def patch_hotel(
-        hotel_id: int,
-        title: str | None = Body(None),
-        name: str | None = Body(None)
-):
+def patch_hotel(hotel_id: int, hotel_data: HotelPATCH):
     global hotels
     for hotel in hotels:
         if hotel["id"] == hotel_id:
-            if title:
-                hotel["title"] = title
-            if name:
-                hotel["name"] = name
+            if hotel_data.title:
+                hotel["title"] = hotel_data.title
+            if hotel_data.name:
+                hotel["name"] = hotel_data.name
     return {"status": "OK"}
 
 
