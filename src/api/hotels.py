@@ -1,6 +1,6 @@
 from fastapi import Query, APIRouter, Body
 from fastapi.openapi.models import Example
-from sqlalchemy import insert, select
+from sqlalchemy import insert, select, func
 
 from src.api.dependencies import PaginationDep
 from src.database import async_session_maker
@@ -25,9 +25,9 @@ async def get_hotels(
     async with async_session_maker() as session:
         query = select(HotelsOrm)
         if location:
-            query = query.where(HotelsOrm.location.ilike(f"%{location.strip()}%"))
+            query = query.where(func.lower(HotelsOrm.location).contains(location.strip().lower()))
         if title:
-            query = query.where(HotelsOrm.title.ilike(f"%{title.strip()}%"))
+            query = query.where(func.lower(HotelsOrm.title).contains(title.strip().lower()))
         query = (
             query
             .limit(per_page)
