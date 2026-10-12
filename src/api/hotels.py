@@ -1,11 +1,9 @@
 from fastapi import Query, APIRouter, Body
 from fastapi.openapi.models import Example
-from sqlalchemy import insert
 
 from repositories.hotels import HotelsRepository
 from src.api.dependencies import PaginationDep
 from src.database import async_session_maker
-from src.models.hotels import HotelsOrm
 from src.schemas.hotels import Hotel, HotelPATCH
 
 
@@ -64,12 +62,11 @@ async def create_hotel(hotel_data: Hotel = Body(openapi_examples={
     "/{hotel_id}",
     summary="Обновить данные об отеле",
 )
-def put_hotel(hotel_id: int, hotel_data: Hotel):
-    global hotels
-    for hotel in hotels:
-        if hotel["id"] == hotel_id:
-            hotel["title"] = hotel_data.title
-            hotel["name"] = hotel_data.name
+async def put_hotel(hotel_id: int, hotel_data: Hotel):
+    async with async_session_maker() as session:
+        await HotelsRepository(session).edit(hotel_data, id=hotel_id)
+        await session.commit()
+
     return {"status": "OK"}
 
 
@@ -92,7 +89,9 @@ def patch_hotel(hotel_id: int, hotel_data: HotelPATCH):
     "/{hotel_id}",
     summary="Удалить данные об отеле",
 )
-def delete_hotel(hotel_id: int):
-    global hotels
-    hotels = [hotel for hotel in hotels if hotel["id"] != hotel_id]
+async def delete_hotel(hotel_id: int):
+    async with async_session_maker() as session:
+        await HotelsRepository(session).delete(id=hotel_id)
+        await session.commit()
+
     return {"status": "OK"}
