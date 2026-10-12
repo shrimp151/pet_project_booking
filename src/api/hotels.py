@@ -13,7 +13,7 @@ router = APIRouter(prefix="/hotels", tags=["Отели"])
 @router.get(
     "",
     summary="Получить данные об отелях",
-    description="Тут может быть доп инфа",
+    description="Тут может быть дополнительная информация",
 )
 async def get_hotels(
     pagination: PaginationDep,
@@ -74,14 +74,13 @@ async def put_hotel(hotel_id: int, hotel_data: Hotel):
     "/{hotel_id}",
     summary="Частично обновить данные об отеле",
 )
-def patch_hotel(hotel_id: int, hotel_data: HotelPATCH):
-    global hotels
-    for hotel in hotels:
-        if hotel["id"] == hotel_id:
-            if hotel_data.title:
-                hotel["title"] = hotel_data.title
-            if hotel_data.name:
-                hotel["name"] = hotel_data.name
+async def patch_hotel(
+        hotel_id: int,
+        hotel_data: HotelPATCH,
+):
+    async with async_session_maker() as session:
+        await HotelsRepository(session).edit(hotel_data, exclude_unset=True, id=hotel_id)
+        await session.commit()
     return {"status": "OK"}
 
 
