@@ -18,9 +18,7 @@ class DBManager:
 
     async def __aexit__(self, *args):
         await self.session.rollback()
-    # ПОЧЕМУ МЫ ТУТ МОЖЕМ ИСПОЛЬЗОВАТЬ ROLLBACK И НЕ ИМПОРТИРОВАТЬ SQLALCHEMY
         await self.session.close()
-    # ПОЧЕМУ AWAIT ТУТ
 
     async def commit(self):
         await self.session.commit()
