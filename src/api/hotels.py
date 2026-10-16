@@ -1,9 +1,7 @@
 from fastapi import Query, APIRouter, Body
 from fastapi.openapi.models import Example
 
-from src.repositories.hotels import HotelsRepository
 from src.api.dependencies import PaginationDep, DBDep
-from src.database import async_session_maker
 from src.schemas.hotels import HotelPatch, HotelAdd
 
 
