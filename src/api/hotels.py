@@ -16,10 +16,10 @@ router = APIRouter(prefix="/hotels", tags=["Отели"])
     description="Тут может быть дополнительная информация",
 )
 async def get_hotels(
-    pagination: PaginationDep,
-    db: DBDep,
-    location: str | None = Query(None, description="Адрес отеля"),
-    title: str | None = Query(None, description="Название отеля"),
+        pagination: PaginationDep,
+        db: DBDep,
+        location: str | None = Query(None, description="Адрес отеля"),
+        title: str | None = Query(None, description="Название отеля"),
 ):
     per_page = pagination.per_page or 5
 
@@ -44,8 +44,8 @@ async def get_hotel(db: DBDep, hotel_id: int):
     summary="Добавить данные о новом отеле",
 )
 async def create_hotel(
-    db: DBDep,
-    hotel_data: HotelAdd = Body(openapi_examples={
+        db: DBDep,
+        hotel_data: HotelAdd = Body(openapi_examples={
             "1": Example(
                 summary="Сочи",
                 value={
@@ -73,9 +73,9 @@ async def create_hotel(
     summary="Обновить данные об отеле",
 )
 async def put_hotel(
-    db: DBDep,
-    hotel_id: int,
-    hotel_data: HotelAdd,
+        db: DBDep,
+        hotel_id: int,
+        hotel_data: HotelAdd,
 ):
     await db.hotels.edit(hotel_data, id=hotel_id)
     await db.commit()
@@ -88,9 +88,9 @@ async def put_hotel(
     summary="Частично обновить данные об отеле",
 )
 async def patch_hotel(
-    db: DBDep,
-    hotel_id: int,
-    hotel_data: HotelPatch,
+        db: DBDep,
+        hotel_id: int,
+        hotel_data: HotelPatch,
 ):
     await db.hotels.edit(hotel_data, exclude_unset=True, id=hotel_id)
     await db.commit()
@@ -103,8 +103,8 @@ async def patch_hotel(
     summary="Удалить данные об отеле",
 )
 async def delete_hotel(
-    db: DBDep,
-    hotel_id: int,
+        db: DBDep,
+        hotel_id: int,
 ):
     await db.hotels.delete(id=hotel_id)
     await db.commit()
