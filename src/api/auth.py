@@ -10,9 +10,7 @@ router = APIRouter(prefix="/auth", tags=["Авторизация и аутент
 
 
 @router.post("/register")
-async def register_user(
-        data: UserRequestAdd,
-):
+async def register_user(data: UserRequestAdd):
     hashed_password = AuthService().hash_password(data.password)
     new_user_data = UserAdd(email=data.email, hashed_password=hashed_password)
     async with async_session_maker() as session:
@@ -20,6 +18,7 @@ async def register_user(
         await session.commit()
 
     return {"status": "OK"}
+
 
 @router.post("/login")
 async def login_user(
@@ -38,12 +37,11 @@ async def login_user(
 
 
 @router.get("/me")
-async def get_me(
-    user_id: UserIdDep,
-):
+async def get_me(user_id: UserIdDep):
     async with async_session_maker() as session:
         user = await UsersRepository(session).get_one_or_none(id=user_id)
         return user
+
 
 @router.post("/logout")
 async def logout(response: Response):
