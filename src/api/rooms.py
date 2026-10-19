@@ -10,7 +10,7 @@ router = APIRouter(prefix="/hotels", tags=["Номера"])
 
 @router.get(
     "/{hotel_id}/rooms",
-    summary="Получить данные о комнатах определенного отеля",
+    summary="Получить данные о незабронированных комнатах определенного отеля",
 )
 async def get_rooms(
         db: DBDep,
